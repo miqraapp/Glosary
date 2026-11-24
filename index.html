@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glosarium MiQRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f6f4;--surface:#fff;--ink:#17252a;--muted:#55686a;--green:#0f4c45;--gold:#9a6f17;--line:#d3dedb;--soft:#e4efec;--ok:#1d7a4d;--bad:#b3392f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a19;--surface:#152624;--ink:#e6efed;--muted:#9bb2ae;--green:#6fcfc0;--gold:#e0b45a;--line:#27403c;--soft:#1b322f;--ok:#58d69a;--bad:#ff8a7e}}
+:root[data-theme="dark"]{--bg:#0e1a19;--surface:#152624;--ink:#e6efed;--muted:#9bb2ae;--green:#6fcfc0;--gold:#e0b45a;--line:#27403c;--soft:#1b322f;--ok:#58d69a;--bad:#ff8a7e}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 "Source Sans 3",system-ui,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px 60px}
+header{padding:34px 0 18px;border-bottom:3px double var(--gold);margin-bottom:18px}
+h1{font:700 clamp(2.2rem,7vw,3.6rem)/1.05 Amiri,Georgia,serif;margin:0;color:var(--green);letter-spacing:.01em}
+header p{margin:8px 0 0;color:var(--muted);max-width:56ch}
+.tabs{display:flex;gap:6px;margin:0 0 16px;flex-wrap:wrap}
+.tab,.chip,button.act{font:600 .95rem "Source Sans 3",sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 16px;cursor:pointer}
+.tab[aria-selected=true],.chip[aria-pressed=true]{background:var(--green);color:var(--bg);border-color:var(--green)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tools{display:grid;gap:10px;margin-bottom:16px}
+input[type=search]{width:100%;padding:12px 16px;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.count{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+.alpha{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.list{display:grid;gap:10px}
+.item{background:var(--surface);border:1px solid var(--line);border-inline-start:5px solid var(--gold);border-radius:8px}
+.item button{all:unset;box-sizing:border-box;display:flex;width:100%;gap:12px;align-items:center;padding:14px 16px;cursor:pointer}
+.item button:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
+.no{flex:none;width:2rem;color:var(--gold);font:700 1.1rem Amiri,serif}
+.term{font:700 1.4rem/1.2 Amiri,Georgia,serif;color:var(--green);flex:1}
+.cat{font-size:.8rem;color:var(--muted);background:var(--soft);padding:2px 10px;border-radius:999px}
+.chev{transition:transform .2s;color:var(--muted)}
+.item[open] .chev{transform:rotate(90deg)}
+.def{display:none;padding:0 16px 16px 60px}
+.item[open] .def{display:block}
+.def p{margin:0 0 10px;max-width:62ch}
+mark{background:#f3d98a;color:#17252a;border-radius:3px;padding:0 2px}
+.empty{padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:10px}
+/* flashcard */
+.stage{perspective:1200px;max-width:560px;margin:10px auto}
+.card{position:relative;height:300px;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;border:0;background:none;width:100%;padding:0;font:inherit;color:inherit}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;border-radius:16px;border:1px solid var(--line);background:var(--surface);border-block:6px double var(--gold)}
+.face.back{transform:rotateY(180deg);background:var(--soft)}
+.face .term{flex:none;font-size:clamp(1.8rem,6vw,2.6rem)}
+.face small{color:var(--muted);margin-top:12px}
+.face.back p{margin:0;font-size:1.1rem;max-width:42ch}
+.ctrl{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.bar{height:6px;background:var(--line);border-radius:6px;max-width:560px;margin:14px auto 0;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);transition:width .3s}
+.know{max-width:560px;margin:8px auto 0;text-align:center;color:var(--muted);font-size:.9rem}
+/* quiz */
+.q{max-width:640px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.q h2{font:700 1.35rem/1.35 Amiri,serif;margin:0 0 14px}
+.q .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.ok{border-color:var(--ok);background:var(--soft);box-shadow:inset 4px 0 0 var(--ok)}
+.opt.bad{border-color:var(--bad);box-shadow:inset 4px 0 0 var(--bad)}
+.fb{min-height:1.6em;margin:10px 0 0;font-weight:600}
+.score{font:700 3rem Amiri,serif;color:var(--green);text-align:center;margin:6px 0}
+@media (prefers-reduced-motion:reduce){.card,.chev,.bar i{transition:none}}
+@media (max-width:520px){.def{padding-left:16px}.cat{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Glosarium MiQRA</h1>
+  <p>Istilah-istilah penting dalam pembelajaran keaslian Al-Qur’an. Telusuri, hafalkan dengan kartu, lalu uji pemahamanmu.</p>
+</header>
+
+<div class="tabs" role="tablist" id="tabs">
+  <button class="tab" role="tab" data-v="jelajah" aria-selected="true">Jelajahi</button>
+  <button class="tab" role="tab" data-v="kartu" aria-selected="false">Kartu hafalan</button>
+  <button class="tab" role="tab" data-v="kuis" aria-selected="false">Kuis</button>
+</div>
+
+<section id="jelajah">
+  <div class="tools">
+    <input type="search" id="q" placeholder="Cari istilah atau pengertian…" aria-label="Cari istilah">
+    <div class="chips" id="chips" role="group" aria-label="Filter kategori"></div>
+  </div>
+  <p class="count" id="count"></p>
+  <div class="list" id="list"></div>
+</section>
+
+<section id="kartu" hidden>
+  <div class="chips" id="chips2" role="group" aria-label="Kategori kartu" style="justify-content:center"></div>
+  <div class="stage"><button class="card" id="card" aria-label="Balik kartu"></button></div>
+  <div class="bar"><i id="bar"></i></div>
+  <p class="know" id="kpos"></p>
+  <div class="ctrl">
+    <button class="act" id="prev">Sebelumnya</button>
+    <button class="act" id="flip">Balik kartu</button>
+    <button class="act" id="next">Berikutnya</button>
+    <button class="act" id="shuf">Acak</button>
+  </div>
+</section>
+
+<section id="kuis" hidden><div class="q" id="quiz"></div></section>
+</div>
+
+<script>
+const D=[
+["Al-Qur’an","Kalam Allah Swt. yang diwahyukan kepada Nabi Muhammad saw. dan menjadi petunjuk bagi manusia.","Dasar"],
+["Autentisitas","Keaslian atau keadaan sesuatu yang benar-benar asli dan dapat dipertanggungjawabkan.","Dasar"],
+["Wahyu","Petunjuk atau pemberitahuan dari Allah Swt. yang disampaikan kepada nabi dan rasul-Nya.","Dasar"],
+["Aż-Żikr","Istilah dalam Al-Qur’an yang berarti peringatan atau wahyu yang mengandung pelajaran bagi manusia.","Dasar"],
+["Taḥaddī","Tantangan Al-Qur’an kepada pihak yang meragukannya untuk mendatangkan sesuatu yang semisal dengannya.","Kemukjizatan"],
+["I’jāz Al-Qur’an","Kemukjizatan Al-Qur’an yang menunjukkan ketidakmampuan manusia untuk menandinginya.","Kemukjizatan"],
+["Transmisi","Proses penyampaian dan pewarisan bacaan atau teks Al-Qur’an dari satu generasi ke generasi berikutnya.","Pemeliharaan"],
+["Ḥifẓ","Kegiatan menghafal dan menjaga ayat-ayat Al-Qur’an dalam ingatan.","Pemeliharaan"],
+["Kodifikasi","Proses penghimpunan dan penyusunan Al-Qur’an dalam bentuk tertulis yang teratur.","Pemeliharaan"],
+["Mushaf","Kumpulan lembaran yang memuat ayat-ayat Al-Qur’an dalam bentuk tertulis.","Pemeliharaan"],
+["Manuskrip","Naskah tulisan tangan yang menjadi objek kajian filologi.","Kajian naskah"],
+["Filologi","Ilmu yang mempelajari teks dalam naskah serta sejarah dan perkembangannya.","Kajian naskah"],
+["Manuskrip Mushaf","Naskah tulisan tangan yang memuat teks Al-Qur’an.","Kajian naskah"],
+["Manuskrip Tafsir","Naskah tulisan tangan yang berisi penjelasan atau penafsiran terhadap ayat-ayat Al-Qur’an.","Kajian naskah"],
+["Radiokarbon","Metode untuk memperkirakan usia bahan organik melalui pengukuran kandungan karbon-14.","Kajian naskah"],
+["Penulis Wahyu","Sahabat Nabi Muhammad saw. yang bertugas menuliskan ayat-ayat Al-Qur’an ketika wahyu diturunkan.","Pemeliharaan"],
+["LPMQ","Lajnah Pentashihan Mushaf Al-Qur’an, lembaga Kementerian Agama yang bertugas melakukan pentashihan mushaf Al-Qur’an.","Lembaga & teknologi"],
+["Pentashihan","Proses pemeriksaan mushaf Al-Qur’an untuk memastikan kesesuaiannya dengan ketentuan yang berlaku.","Lembaga & teknologi"],
+["Mushaf Digital","Penyajian teks Al-Qur’an dalam format digital yang dapat diakses melalui perangkat elektronik.","Lembaga & teknologi"]
+].map((x,i)=>({n:i+1,t:x[0],d:x[1],c:x[2]}));
+const CATS=["Semua",...new Set(D.map(x=>x.c))];
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function hl(s,q){s=esc(s);if(!q)return s;const r=q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");return s.replace(new RegExp("("+r+")","gi"),"<mark>$1</mark>")}
+function chips(el,get,set){el.innerHTML="";CATS.forEach(c=>{const b=document.createElement("button");b.className="chip";b.textContent=c;b.setAttribute("aria-pressed",get()===c);b.onclick=()=>{set(c);[...el.children].forEach(k=>k.setAttribute("aria-pressed",k.textContent===c))};el.appendChild(b)})}
+
+/* tabs */
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",x===t));
+  ["jelajah","kartu","kuis"].forEach(v=>$("#"+v).hidden=v!==t.dataset.v);
+  if(t.dataset.v==="kuis")startQuiz();
+});
+
+/* explore */
+let cat="Semua";
+function render(){
+  const q=$("#q").value.trim().toLowerCase();
+  const r=D.filter(x=>(cat==="Semua"||x.c===cat)&&(!q||x.t.toLowerCase().includes(q)||x.d.toLowerCase().includes(q)));
+  $("#count").textContent=r.length+" dari "+D.length+" istilah";
+  $("#list").innerHTML=r.length?r.map(x=>`<div class="item" data-n="${x.n}"><button aria-expanded="false"><span class="no">${x.n}</span><span class="term">${hl(x.t,q)}</span><span class="cat">${x.c}</span><span class="chev">›</span></button><div class="def"><p>${hl(x.d,q)}</p></div></div>`).join(""):`<div class="empty">Tidak ada istilah yang cocok. Coba kata kunci lain atau pilih kategori “Semua”.</div>`;
+  document.querySelectorAll(".item button").forEach(b=>b.onclick=()=>{const it=b.parentNode;it.toggleAttribute("open");b.setAttribute("aria-expanded",it.hasAttribute("open"))});
+}
+$("#q").oninput=render;
+chips($("#chips"),()=>cat,c=>{cat=c;render()});
+render();
+
+/* flashcards */
+let deck=[],i=0,ccat="Semua";
+function buildDeck(){deck=D.filter(x=>ccat==="Semua"||x.c===ccat);i=0;showCard()}
+function showCard(){
+  const x=deck[i];const c=$("#card");c.classList.remove("flip");
+  c.innerHTML=`<div class="face"><span class="term">${esc(x.t)}</span><small>Ketuk untuk melihat pengertian</small></div><div class="face back"><p>${esc(x.d)}</p><small>${x.c}</small></div>`;
+  $("#kpos").textContent="Kartu "+(i+1)+" dari "+deck.length;
+  $("#bar").style.width=((i+1)/deck.length*100)+"%";
+}
+const flip=()=>$("#card").classList.toggle("flip");
+$("#card").onclick=flip;$("#flip").onclick=flip;
+$("#next").onclick=()=>{i=(i+1)%deck.length;showCard()};
+$("#prev").onclick=()=>{i=(i-1+deck.length)%deck.length;showCard()};
+$("#shuf").onclick=()=>{deck.sort(()=>Math.random()-.5);i=0;showCard()};
+chips($("#chips2"),()=>ccat,c=>{ccat=c;buildDeck()});
+buildDeck();
+document.addEventListener("keydown",e=>{if($("#kartu").hidden||e.target.tagName==="INPUT")return;
+  if(e.key==="ArrowRight")$("#next").click();if(e.key==="ArrowLeft")$("#prev").click();if(e.key===" "&&e.target.tagName!=="BUTTON"){e.preventDefault();flip()}});
+
+/* quiz */
+let Q=[],qi=0,sc=0;
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+function startQuiz(){
+  Q=shuffle(D).slice(0,8).map(x=>{
+    const mode=Math.random()<.5;
+    const wrong=shuffle(D.filter(y=>y!==x)).slice(0,3);
+    return {x,mode,opts:shuffle([x,...wrong])};
+  });qi=0;sc=0;ask();
+}
+function ask(){
+  const box=$("#quiz");
+  if(qi>=Q.length){
+    const msg=sc>=7?"Luar biasa, kamu menguasai glosarium ini.":sc>=5?"Bagus. Ulangi kartu hafalan untuk istilah yang masih keliru.":"Tetap semangat. Pelajari lagi lewat kartu hafalan, lalu coba kuis kembali.";
+    box.innerHTML=`<div class="meta"><span>Hasil kuis</span></div><div class="score">${sc} / ${Q.length}</div><p style="text-align:center">${msg}</p><div class="ctrl"><button class="act" id="again">Main lagi</button></div>`;
+    $("#again").onclick=startQuiz;return;
+  }
+  const {x,mode,opts}=Q[qi];
+  box.innerHTML=`<div class="meta"><span>Soal ${qi+1} dari ${Q.length}</span><span>Skor ${sc}</span></div>
+  <h2>${mode?"Apa pengertian dari “"+esc(x.t)+"”?":"Istilah apa yang dimaksud: "+esc(x.d)}</h2>
+  <div id="opts">${opts.map((o,k)=>`<button class="opt" data-k="${k}">${esc(mode?o.d:o.t)}</button>`).join("")}</div>
+  <p class="fb" id="fb" aria-live="polite"></p><div class="ctrl" id="nx" hidden><button class="act" id="go">${qi+1===Q.length?"Lihat hasil":"Soal berikutnya"}</button></div>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    const o=opts[b.dataset.k],right=o===x;
+    document.querySelectorAll(".opt").forEach(z=>{z.disabled=true;if(opts[z.dataset.k]===x)z.classList.add("ok")});
+    if(right)sc++;else b.classList.add("bad");
+    $("#fb").textContent=right?"Benar.":"Kurang tepat. Jawaban yang benar ditandai hijau.";
+    $("#fb").style.color=right?"var(--ok)":"var(--bad)";
+    $("#nx").hidden=false;$("#go").focus();
+    $("#go").onclick=()=>{qi++;ask()};
+  });
+}
+</script>
+</body>
+</html>
